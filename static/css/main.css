@@ -219,6 +219,20 @@ a {
 .nav-yt svg { display: block; }
 .nav-yt:hover { transform: translateY(-3px); background: rgba(255,0,0,0.06); }
 
+/* Instagram button */
+.nav-ig {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-left: 6px;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.nav-ig svg { display: block; }
+.nav-ig:hover { transform: translateY(-3px); background: linear-gradient(90deg, rgba(245,133,41,0.06), rgba(129,52,175,0.06)); }
+
 /* Site banner */
 .site-banner {
   width: 100%;
