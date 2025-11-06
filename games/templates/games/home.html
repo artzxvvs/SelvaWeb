@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}SelvaCore — Portfólio de Jogos{% endblock %}
+
+{% block content %}
+  <section class="home-hero" aria-labelledby="hero-title">
+    <div>
+      <p class="hero-kicker">SelvaCore Studios</p>
+      <h1 class="hero-title" id="hero-title">
+        {% if featured_game %}
+          {{ featured_game.title }}
+        {% else %}
+          A selva pulsa com novos mundos
+        {% endif %}
+      </h1>
+      <p class="hero-text">
+        {% if featured_game and featured_game.tagline %}
+          {{ featured_game.tagline }}
+        {% else %}
+          Experiências autorais com DNA de selva: sistemas vivos, combate visceral e histórias
+          cinematográficas criadas para plataformas cruzadas.
+        {% endif %}
+      </p>
+      <a class="hero-cta" href="#lancamentos">Explorar catálogo</a>
+    </div>
+    <div class="hero-feature">
+      <span class="hero-feature__label">Visão</span>
+      <p class="hero-feature__text">
+        {% if featured_game and featured_game.short_description %}
+          {{ featured_game.short_description }}
+        {% else %}
+          SelvaCore combina tecnologia proprietária com arte orgânica para entregar mundos que respondem às
+          decisões dos jogadores.
+        {% endif %}
+      </p>
+      <span class="hero-feature__label">Próximo passo</span>
+      <p class="hero-feature__text">
+        {% if upcoming_games %}
+          Próximo lançamento: {{ upcoming_games.0.title }} — {{ upcoming_games.0.release_date|date:"F Y" }}.
+        {% elif featured_game and featured_game.release_date %}
+          Próximo marco: {{ featured_game.release_date|date:"d 'de' F 'de' Y" }}.
+        {% elif unrevealed_games %}
+          Incubadora ativa com {{ unrevealed_games|length }} projetos confidenciais aguardando anúncio.
+        {% else %}
+          Cadastre um jogo no admin para iniciar o calendário de lançamentos.
+        {% endif %}
+      </p>
+    </div>
+  </section>
+
+  {% if featured_game %}
+    <section class="featured-game" id="destaque" aria-labelledby="featured-title">
+      <article class="featured-card">
+        <div class="featured-card__media">
+          {% if featured_game.hero_image_url %}
+            <img src="{{ featured_game.hero_image_url }}" alt="Arte destaque de {{ featured_game.title }}" />
+          {% else %}
+            <div class="featured-card__placeholder">{{ featured_game.title|first }}</div>
+          {% endif %}
+        </div>
+        <div class="featured-card__body">
+          <div class="badge-row">
+            <span class="badge">Projeto destaque</span>
+            {% if featured_game.status == 'released' %}
+              <span class="badge badge--amber">Disponível agora</span>
+            {% endif %}
+          </div>
+          <h2 class="featured-card__title" id="featured-title">{{ featured_game.title }}</h2>
+          {% if featured_game.tagline %}
+            <p class="featured-card__tagline">{{ featured_game.tagline }}</p>
+          {% endif %}
+          <div class="featured-card__meta">
+            {% if featured_game.genre %}<span>{{ featured_game.genre }}</span>{% endif %}
+            {% if featured_game.platforms %}<span>{{ featured_game.platforms }}</span>{% endif %}
+            {% if featured_game.release_date %}
+              <span>Lançamento {{ featured_game.release_date|date:"d 'de' F 'de' Y" }}</span>
+            {% else %}
+              <span>Lançamento em breve</span>
+            {% endif %}
+          </div>
+          <p class="featured-card__about">
+            {% if featured_game.long_description %}
+              {{ featured_game.long_description|linebreaksbr }}
+            {% elif featured_game.short_description %}
+              {{ featured_game.short_description }}
+            {% else %}
+              Revelaremos mais do universo de {{ featured_game.title }} conforme avançamos pelas camadas da selva.
+            {% endif %}
+          </p>
+          {% if featured_game.trailer_url %}
+            <div class="featured-card__actions">
+              <a class="hero-cta hero-cta--ghost" href="{{ featured_game.trailer_url }}" target="_blank" rel="noopener">Assistir trailer</a>
+            </div>
+          {% endif %}
+        </div>
+      </article>
+    </section>
+  {% endif %}
+
+  <section id="manifesto" class="game-section" aria-labelledby="manifesto-title">
+    <header class="game-section-header">
+      <div>
+        <h2 class="section-title" id="manifesto-title">Manifesto SelvaCore</h2>
+        <p class="section-subtitle">Nossos princípios para cultivar mundos vivos e comunidades fortes.</p>
+      </div>
+    </header>
+    <div class="pillars">
+      {% for principle in studio_principles %}
+        <article class="pillar">
+          <h3 class="pillar__title">{{ principle.title }}</h3>
+          <p class="pillar__text">{{ principle.description }}</p>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section id="lancamentos" class="game-section" aria-labelledby="catalogo-title">
+    <header class="game-section-header">
+      <div>
+        <h2 class="section-title" id="catalogo-title">Catálogo SelvaCore</h2>
+        <p class="section-subtitle">
+          {% if has_games %}
+            {{ total_games }} títulos em andamento, lançados e incubados.
+          {% else %}
+            Cadastre um jogo para começar a montar sua vitrine.
+          {% endif %}
+        </p>
+      </div>
+    </header>
+
+    {% if has_games %}
+      {% if upcoming_games %}
+        <h3 class="section-heading">Próximos lançamentos</h3>
+        <div class="game-grid">
+          {% for game in upcoming_games %}
+            {% include "games/partials/game_card.html" with game=game %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if released_games %}
+        <h3 class="section-heading">Disponíveis agora</h3>
+        <div class="game-grid">
+          {% for game in released_games %}
+            {% include "games/partials/game_card.html" with game=game highlight_status=True %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% if unrevealed_games %}
+        <h3 class="section-heading">Incubadora SelvaCore</h3>
+        <div class="game-grid">
+          {% for game in unrevealed_games %}
+            {% include "games/partials/game_card.html" with game=game %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <p class="empty-state">
+        Nenhum jogo cadastrado ainda. Use o painel administrativo para registrar seu primeiro projeto,
+        anexar artes e definir um cronograma.
+      </p>
+    {% endif %}
+  </section>
+{% endblock %}

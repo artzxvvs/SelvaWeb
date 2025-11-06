@@ -1,0 +1,58 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1a2a1f" />
+    <title>{% block title %}SelvaCore{% endblock %}</title>
+  <link rel="icon" type="image/svg+xml" href="{% static 'img/site-icon.svg' %}" />
+    <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+    {% block head_extra %}{% endblock %}
+  </head>
+  <body class="page-body">
+    <a class="skip-link" href="#conteudo-principal">Ir direto ao conteúdo</a>
+    <div class="page-backdrop" aria-hidden="true"></div>
+    <header class="site-header">
+      {% block navigation %}
+        <nav class="site-nav">
+          <div class="brand">
+            <img src="{% static 'img/site-mark.svg' %}" alt="Logotipo SelvaCore" class="brand__mark" />
+            <div class="brand__text">
+              <span class="brand__label">SelvaCore Studios</span>
+              <span class="brand__tag">Núcleo criativo da selva digital</span>
+            </div>
+          </div>
+          <div class="nav-actions">
+            <a class="nav-link" href="#lancamentos">Lançamentos</a>
+            <a class="nav-link" href="#manifesto">Manifesto</a>
+            <a class="nav-link nav-link--cta" href="#contato">Contato</a>
+          </div>
+        </nav>
+      {% endblock %}
+    </header>
+    <main id="conteudo-principal" class="page-main">
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="site-footer" id="contato">
+      {% block footer %}
+        <div class="footer-grid">
+          <div>
+            <h2 class="footer-title">SelvaCore Studios</h2>
+            <p class="footer-text">Construindo experiências intensas que respeitam a selva de histórias dos jogadores.</p>
+          </div>
+          <div>
+            <p class="footer-text">Parcerias e imprensa</p>
+            <a class="footer-link" href="mailto:contact@selvacore.gg">contact@selvacore.gg</a>
+          </div>
+          <div>
+            <p class="footer-text">Siga o desenvolvimento</p>
+            <p class="footer-text">Discord · YouTube · Steam · Xbox</p>
+          </div>
+        </div>
+        <p class="footer-meta">SelvaCore © {% now "Y" %} — Força criativa da selva digital</p>
+      {% endblock %}
+    </footer>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

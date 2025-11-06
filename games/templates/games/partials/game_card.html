@@ -1,0 +1,40 @@
+<article class="game-card">
+  <div class="game-card__cover">
+    {% if game.cover_image_url %}
+      <img src="{{ game.cover_image_url }}" alt="Capa do jogo {{ game.title }}" />
+    {% else %}
+      <span>{{ game.title|first|default:"?" }}</span>
+    {% endif %}
+  </div>
+  <div class="game-card__body">
+    <h4 class="game-card__title">{{ game.title }}</h4>
+    <div class="game-card__meta">
+      <span>#{{ game.slug }}</span>
+      {% if game.release_date %}
+        <span>{{ game.release_date|date:"d 'de' M 'de' Y" }}</span>
+      {% else %}
+        <span>Lançamento em breve</span>
+      {% endif %}
+    </div>
+    {% if game.platforms %}
+      <div class="game-card__meta">{{ game.platforms }}</div>
+    {% endif %}
+    <p class="game-card__description">
+      {% if game.short_description %}
+        {{ game.short_description }}
+      {% elif game.long_description %}
+        {{ game.long_description|truncatewords:32 }}
+      {% else %}
+        Detalhes adicionais serão revelados quando o projeto estiver pronto para a selva.
+      {% endif %}
+    </p>
+    <span class="game-status {% if highlight_status or game.status == 'released' %}game-status--amber{% endif %}">
+      {{ game.get_status_display }}
+    </span>
+    {% if game.trailer_url %}
+      <div class="game-card__actions">
+        <a class="nav-link" href="{{ game.trailer_url }}" target="_blank" rel="noopener">Ver trailer</a>
+      </div>
+    {% endif %}
+  </div>
+</article>
