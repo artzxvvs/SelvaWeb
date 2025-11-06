@@ -54,4 +54,33 @@ def home(request):
         "total_games": total_games,
     }
 
+    # Banner carousel images: priorize jogos destacados, depois os demais com imagens
+    banner_images = []
+    for g in games.order_by('-is_featured', '-updated_at'):
+        img_url = g.hero_image_url or g.cover_image_url
+        if img_url:
+            banner_images.append(img_url)
+        if len(banner_images) >= 6:
+            break
+
+    # If there are at least 2 images, user requested to show only the second one as a reduced banner
+    banner_mode = "default"
+    if len(banner_images) >= 2:
+        banner_images = [banner_images[1]]
+        banner_mode = "second-small"
+
+    context["banner_images"] = banner_images
+    context["banner_mode"] = banner_mode
+
+    # Featured card images (small carousel inside the featured card)
+    featured_images = []
+    if featured_game:
+        # Prioriza hero, depois capa
+        if featured_game.hero_image_url:
+            featured_images.append(featured_game.hero_image_url)
+        if featured_game.cover_image_url and featured_game.cover_image_url not in featured_images:
+            featured_images.append(featured_game.cover_image_url)
+
+    context["featured_images"] = featured_images
+
     return render(request, "games/home.html", context)

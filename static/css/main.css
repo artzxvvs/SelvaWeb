@@ -81,6 +81,18 @@ a {
   z-index: -2;
 }
 
+/* Subtle moving background for life */
+.page-backdrop {
+  background-size: 200% 200%, 180% 180%, 200% 200%;
+  animation: backdrop-move 18s linear infinite;
+}
+
+@keyframes backdrop-move {
+  0% { background-position: 0% 0%, 0% 0%, 0% 0%; }
+  50% { background-position: 100% 50%, 50% 100%, 100% 50%; }
+  100% { background-position: 0% 0%, 0% 0%, 0% 0%; }
+}
+
 .site-header,
 .site-footer,
 .page-main {
@@ -119,6 +131,17 @@ a {
   background: linear-gradient(145deg, rgba(45, 135, 82, 0.85), rgba(182, 128, 57, 0.9));
   padding: 12px;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+/* Gentle float animation for the logo */
+.brand__mark {
+  animation: floaty 6s ease-in-out infinite;
+}
+
+@keyframes floaty {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
 }
 
 .brand__text {
@@ -172,6 +195,160 @@ a {
   color: #0f180f;
   font-weight: 600;
 }
+
+/* Pulse for CTA */
+.nav-link--cta {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.nav-link--cta:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(45,135,82,0.15);
+}
+
+/* YouTube button in header */
+.nav-yt {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-radius: 10px;
+  padding: 8px 10px;
+  margin-left: 6px;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+.nav-yt svg { display: block; }
+.nav-yt:hover { transform: translateY(-3px); background: rgba(255,0,0,0.06); }
+
+/* Site banner */
+.site-banner {
+  width: 100%;
+  max-width: 1200px;
+  margin: 18px auto 0;
+  overflow: hidden;
+}
+.site-banner__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgba(45,135,82,0.08), rgba(182,128,57,0.06));
+  border: 1px solid rgba(204,213,201,0.06);
+  box-shadow: 0 8px 30px rgba(9,12,9,0.25);
+  animation: banner-in 700ms cubic-bezier(.2,.9,.3,1) both;
+}
+.site-banner__text {
+  display: flex;
+  flex-direction: column;
+}
+.site-banner__text strong { font-size: 1.05rem; letter-spacing: 0.06em; }
+.site-banner__text span { color: var(--text-secondary); font-size: 0.95rem; }
+.site-banner__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: linear-gradient(140deg, rgba(45,135,82,0.95), rgba(182,128,57,0.95));
+  color: #0f180f;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.site-banner__cta:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(45,135,82,0.14); }
+
+@keyframes banner-in {
+  from { transform: translateY(-12px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Carousel styles */
+.carousel {
+  position: relative;
+  height: 220px; /* reduced height */
+  border-radius: 14px;
+  overflow: hidden;
+}
+.carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 450ms cubic-bezier(.2,.9,.3,1);
+}
+.carousel-slide {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+}
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.carousel-slide__caption {
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  color: var(--text-primary);
+  text-shadow: 0 6px 18px rgba(0,0,0,0.6);
+}
+
+/* Smaller variant when using only the second image */
+.carousel.small {
+  height: 140px;
+}
+.carousel.small .carousel-slide__caption { bottom: 10px; font-size: 0.95rem; }
+.carousel.small .carousel-prev,
+.carousel.small .carousel-next { display: none; }
+.carousel-prev, .carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.38);
+  color: var(--text-primary);
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.carousel-prev { left: 12px; }
+.carousel-next { right: 12px; }
+.carousel:hover .carousel-prev, .carousel:hover .carousel-next { opacity: 1; }
+
+@media (max-width: 768px) {
+  .carousel { height: 160px; }
+}
+
+@media (max-width: 768px) {
+  .featured-card {
+    max-width: 100%;
+    margin: 12px auto;
+  }
+  .featured-card__body {
+    padding: 22px 20px 24px;
+  }
+  .featured-card__media { max-height: 220px; }
+}
+
+/* Single banner image variant (replaces carousel) */
+.site-banner-image {
+  position: relative;
+  height: 140px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+.site-banner-image.small { height: 110px; }
+.site-banner-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.site-banner__caption { position: absolute; left: 18px; bottom: 12px; color: var(--text-primary); text-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+
+/* Reduce featured card media size to make element smaller */
+.featured-card__media { aspect-ratio: 4 / 3; }
+.featured-card { max-width: 900px; margin: 12px auto; }
 
 .page-main {
   flex: 1;
@@ -320,7 +497,11 @@ a {
   align-items: stretch;
 }
 
+
 .featured-card {
+  width: 100%;
+  max-width: 1200px; /* match main container */
+  margin: 18px auto; /* center and match spacing */
   border-radius: var(--radius-lg);
   overflow: hidden;
   border: 1px solid rgba(204, 213, 201, 0.12);
@@ -332,8 +513,9 @@ a {
 
 .featured-card__media {
   position: relative;
-  aspect-ratio: 16 / 9;
-  background: rgba(45, 135, 82, 0.18);
+  aspect-ratio: 4 / 3;
+  max-height: 320px; /* slightly smaller for compact layout */
+  background: rgba(45, 135, 82, 0.06);
 }
 
 .featured-card__media img {
@@ -341,6 +523,12 @@ a {
   height: 100%;
   object-fit: cover;
 }
+
+/* Simple carousel inside featured card */
+.simple-carousel { position: relative; height: 100%; overflow: hidden; }
+.simple-carousel-track { display: flex; height: 100%; transition: transform 400ms ease; }
+.simple-carousel-slide { min-width: 100%; height: 100%; }
+.simple-carousel-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .featured-card__placeholder {
   position: absolute;
@@ -355,7 +543,7 @@ a {
 }
 
 .featured-card__body {
-  padding: 24px 28px 30px;
+  padding: 36px 40px 30px; /* match .home-hero padding for aligned sides */
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -607,6 +795,20 @@ a {
   font-size: 0.82rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+}
+
+.footer-links a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 700;
+  border-bottom: 1px dashed rgba(247,249,244,0.12);
+  padding-bottom: 2px;
+}
+
+.footer-note {
+  margin-top: 8px;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
 }
 
 @media (max-width: 768px) {

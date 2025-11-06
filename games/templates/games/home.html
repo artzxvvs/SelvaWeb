@@ -53,10 +53,22 @@
     <section class="featured-game" id="destaque" aria-labelledby="featured-title">
       <article class="featured-card">
         <div class="featured-card__media">
-          {% if featured_game.hero_image_url %}
-            <img src="{{ featured_game.hero_image_url }}" alt="Arte destaque de {{ featured_game.title }}" />
+          {% if featured_images and featured_images|length > 0 %}
+            <div class="simple-carousel" data-autoplay="true" data-interval="3500">
+              <div class="simple-carousel-track">
+                {% for img in featured_images %}
+                  <div class="simple-carousel-slide">
+                    <img src="{{ img }}" alt="{{ featured_game.title }} - imagem {{ forloop.counter }}" />
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
           {% else %}
-            <div class="featured-card__placeholder">{{ featured_game.title|first }}</div>
+            {% if featured_game.hero_image_url %}
+              <img src="{{ featured_game.hero_image_url }}" alt="Arte destaque de {{ featured_game.title }}" />
+            {% else %}
+              <div class="featured-card__placeholder">{{ featured_game.title|first }}</div>
+            {% endif %}
           {% endif %}
         </div>
         <div class="featured-card__body">
