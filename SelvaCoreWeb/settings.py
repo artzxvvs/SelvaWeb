@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -129,3 +130,20 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'faq'
+LOGOUT_REDIRECT_URL = 'landing'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'no-reply@selvacore.local'
+
+PIX_KEY = os.environ.get('PIX_KEY', '00020101021226840014BR.GOV.BCB.PIX01pix-chave-exemplo52040000530398654040.005802BR5925SELVACORE STUDIOS LTDA6009SAO PAULO62110513SELVA1234566304ABCD')
+PIX_MERCHANT_NAME = os.environ.get('PIX_MERCHANT_NAME', 'SelvaCore Studios')
+PIX_MERCHANT_CITY = os.environ.get('PIX_MERCHANT_CITY', 'SAO PAULO')
+PIX_STATIC_PAYLOAD = os.environ.get(
+    'PIX_STATIC_PAYLOAD',
+    '00020126430014br.gov.bcb.pix0114+55689923413980203Pix5204000053039865802BR5925BEN HUR SOARES MENDES SAN6010RIO BRANCO62130509Selvacore6304EA25',
+)
+PIX_STATIC_TXID = os.environ.get('PIX_STATIC_TXID', 'Selvacore')
+PIX_DESCRIPTION = os.environ.get('PIX_DESCRIPTION', 'SelvaCore Apoio')

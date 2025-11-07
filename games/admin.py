@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 
-from .models import Game
+from .models import DonationPledge, EmailVerification, FAQCategory, FAQEntry, Feedback, Game
 
 
 @admin.register(Game)
@@ -43,3 +43,55 @@ class GameAdmin(admin.ModelAdmin):
         return "Envie uma capa ou informe uma URL para visualizar aqui."
 
     preview_cover.short_description = "Pré-visualização"
+
+
+class FAQEntryInline(admin.StackedInline):
+    model = FAQEntry
+    extra = 1
+    fields = ("question", "answer", "audience", "order", "is_featured", "is_active")
+
+
+@admin.register(FAQCategory)
+class FAQCategoryAdmin(admin.ModelAdmin):
+    list_display = ("title", "order", "is_active")
+    list_filter = ("is_active",)
+    search_fields = ("title", "description")
+    ordering = ("order", "title")
+    prepopulated_fields = {"slug": ("title",)}
+    inlines = [FAQEntryInline]
+
+
+@admin.register(FAQEntry)
+class FAQEntryAdmin(admin.ModelAdmin):
+    list_display = ("question", "category", "audience", "order", "is_featured", "is_active")
+    list_filter = ("category", "audience", "is_featured", "is_active")
+    search_fields = ("question", "answer")
+    ordering = ("category", "order")
+
+
+@admin.register(Feedback)
+class FeedbackAdmin(admin.ModelAdmin):
+    list_display = ("title", "user", "topic", "impact_rating", "status", "is_public", "created_at")
+    list_filter = ("status", "topic", "is_public", "created_at")
+    search_fields = ("title", "message", "user__username", "user__email")
+    ordering = ("-created_at",)
+    autocomplete_fields = ("user",)
+    readonly_fields = ("created_at", "updated_at")
+
+
+@admin.register(DonationPledge)
+class DonationPledgeAdmin(admin.ModelAdmin):
+    list_display = ("user", "amount", "currency", "pix_status", "is_recurring", "created_at")
+    list_filter = ("pix_status", "is_recurring", "visibility", "currency", "created_at")
+    search_fields = ("user__username", "user__email", "message", "pix_txid", "pix_transaction_code")
+    ordering = ("-created_at",)
+    autocomplete_fields = ("user",)
+    readonly_fields = ("pix_txid", "pix_last_checked_at")
+
+
+@admin.register(EmailVerification)
+class EmailVerificationAdmin(admin.ModelAdmin):
+    list_display = ("user", "code", "created_at", "expires_at", "verified_at", "attempts")
+    list_filter = ("created_at", "verified_at")
+    search_fields = ("user__username", "user__email", "code")
+    ordering = ("-created_at",)

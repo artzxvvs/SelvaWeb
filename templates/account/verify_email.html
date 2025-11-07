@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Verificar e-mail • SelvaCore{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-card">
+    <h1>Confirme seu e-mail</h1>
+    <p class="auth-lead">Enviamos um código numérico para sua caixa de entrada. Insira abaixo para liberar o portal da comunidade.</p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <input type="hidden" name="action" value="verify" />
+      {% if verification_form.non_field_errors %}
+        <div class="form-error-group">
+          {% for error in verification_form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+      {% endif %}
+      {% for field in verification_form %}
+        <div class="form-field{% if field.errors %} has-error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
+          {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+      {% endfor %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+      <div class="form-actions">
+        <button class="btn btn--primary" type="submit">Validar código</button>
+        <a class="btn btn--ghost" href="{% url 'landing' %}">Voltar</a>
+      </div>
+    </form>
+    <div class="auth-resend">
+      <h2>Não recebeu?</h2>
+      <p>Reenvie o código usando o e-mail cadastrado.</p>
+      <form method="post" class="auth-resend__form" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="resend" />
+        {% for field in resend_form %}
+          <div class="form-field{% if field.errors %} has-error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+        <div class="form-actions">
+          <button class="btn btn--ghost" type="submit">Reenviar código</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

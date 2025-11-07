@@ -10,9 +10,94 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}" />
     {% block head_extra %}{% endblock %}
   </head>
-  <body class="page-body">
+  <body class="page-body page-is-loading">
+    <div class="jungle-loader is-active" id="jungle-loader" aria-hidden="true">
+      <div class="jungle-loader__backdrop"></div>
+      <div class="jungle-loader__content">
+        <div class="jungle-loader__ring">
+          <span class="orb orb--one"></span>
+          <span class="orb orb--two"></span>
+          <span class="orb orb--three"></span>
+          <span class="orb orb--four"></span>
+          <span class="orb orb--five"></span>
+        </div>
+        <p class="jungle-loader__text">Desbravando a selva digital</p>
+        <svg class="loader-art" viewBox="0 0 96 72" aria-hidden="true" shape-rendering="crispEdges">
+          <g class="ground">
+            <rect x="0" y="60" width="96" height="12" fill="#1d271c" />
+            <rect x="6" y="58" width="16" height="4" fill="#243724" />
+            <rect x="26" y="58" width="14" height="4" fill="#27482d" />
+            <rect x="48" y="58" width="20" height="4" fill="#27482d" />
+            <rect x="74" y="58" width="12" height="4" fill="#2e6c3a" />
+            <rect x="12" y="62" width="10" height="2" fill="#2f6d3c" />
+            <rect x="52" y="62" width="14" height="2" fill="#2f6d3c" />
+            <rect x="78" y="62" width="8" height="2" fill="#3c8d4f" />
+          </g>
+          <g class="tree-canopy">
+            <rect x="18" y="6" width="60" height="10" fill="#2f8a53" />
+            <rect x="12" y="14" width="72" height="12" fill="#25653d" />
+            <rect x="20" y="10" width="16" height="6" fill="#46c47a" />
+            <rect x="40" y="8" width="18" height="6" fill="#3fb56e" />
+            <rect x="60" y="10" width="12" height="6" fill="#44c079" />
+            <rect x="24" y="20" width="20" height="6" fill="#349c60" />
+            <rect x="52" y="20" width="18" height="6" fill="#349c60" />
+          </g>
+          <g class="tree-light">
+            <rect x="28" y="12" width="12" height="4" fill="#69e396" />
+            <rect x="48" y="12" width="10" height="4" fill="#69e396" />
+            <rect x="36" y="18" width="16" height="4" fill="#58d887" />
+          </g>
+          <g class="tree-vines tree-vines--left">
+            <rect x="26" y="16" width="2" height="18" fill="#26663c" />
+            <rect x="24" y="20" width="2" height="12" fill="#2f7a47" />
+            <rect x="28" y="18" width="2" height="14" fill="#347f4c" />
+          </g>
+          <g class="tree-vines tree-vines--right">
+            <rect x="60" y="16" width="2" height="18" fill="#26663c" />
+            <rect x="62" y="18" width="2" height="14" fill="#2f7a47" />
+            <rect x="64" y="20" width="2" height="12" fill="#347f4c" />
+          </g>
+          <g class="tree-spark">
+            <rect x="22" y="6" width="2" height="2" fill="#8dffba" />
+            <rect x="34" y="4" width="2" height="2" fill="#8dffba" />
+            <rect x="66" y="8" width="2" height="2" fill="#8dffba" />
+          </g>
+          <g class="tree-trunk">
+            <rect x="36" y="24" width="12" height="26" fill="#8f5a35" />
+            <rect x="48" y="24" width="8" height="26" fill="#7a4125" />
+            <rect x="34" y="28" width="4" height="12" fill="#aa7041" />
+            <rect x="42" y="30" width="6" height="6" fill="#b77d4a" />
+            <rect x="40" y="40" width="8" height="6" fill="#794125" />
+            <rect x="38" y="46" width="12" height="6" fill="#6a341b" />
+            <rect x="34" y="50" width="6" height="4" fill="#54301b" />
+            <rect x="48" y="50" width="6" height="4" fill="#54301b" />
+          </g>
+          <g class="dino">
+            <image class="loader-sprite loader-sprite--dino" href="{% static 'img/dino-loader.png' %}" x="8" y="24" width="44" height="44" preserveAspectRatio="xMidYMid meet" />
+          </g>
+          <g class="capy">
+            <image class="loader-sprite loader-sprite--capy" href="{% static 'img/capivara-loader.png' %}" x="52" y="34" width="30" height="20" preserveAspectRatio="xMidYMid meet" />
+          </g>
+        </svg>
+        <div class="jungle-loader__fireflies">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+    <noscript>
+      <style>.jungle-loader{display:none!important;}</style>
+    </noscript>
     <a class="skip-link" href="#conteudo-principal">Ir direto ao conteúdo</a>
     <div class="page-backdrop" aria-hidden="true"></div>
+    <div class="canopy-layers" aria-hidden="true">
+      <span class="layer layer--mist"></span>
+      <span class="layer layer--glow"></span>
+      <span class="layer layer--fireflies"></span>
+    </div>
     <header class="site-header">
       {% block navigation %}
         <nav class="site-nav">
@@ -24,21 +109,44 @@
             </div>
           </div>
           <div class="nav-actions">
-            <a class="nav-link" href="#lancamentos">Lançamentos</a>
-            <a class="nav-link" href="#manifesto">Manifesto</a>
-            <a class="nav-link nav-link--cta" href="#contato">Contato</a>
-            <a class="nav-yt" href="https://www.youtube.com/@selvacore" target="_blank" rel="noopener" aria-label="SelvaCore no YouTube">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M23.5 6.2s-.2-1.6-.8-2.3c-.8-.9-1.7-.9-2.1-1C16.8 2.3 12 2.3 12 2.3h-.1s-4.8 0-8.6.6C2.5 3.1 1.6 3.1.8 4 0 4.8 0 6.4 0 6.4S0 8 0 9.6v4.8C0 16 0 17.6.8 18.4c.8.9 2.1.9 2.7 1 2.9.4 12.8.5 12.8.5s4.8 0 8.6-.6c.5-.1 1.3-.1 2.1-1 .6-.7.8-2.3.8-2.3s.2-1.6.2-3.2V9.6c0-1.6-.2-3.4-.2-3.4z" fill="#FF0000"/><path d="M9.5 15.2l6-3.6-6-3.6v7.2z" fill="#fff"/></svg>
-            </a>
-            <a class="nav-ig" href="https://www.instagram.com/selvacoredevstudio" target="_blank" rel="noopener" aria-label="SelvaCore no Instagram">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="igGrad" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#f58529"/><stop offset="50%" stop-color="#dd2a7b"/><stop offset="100%" stop-color="#8134af"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" fill="url(#igGrad)"/><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6z" fill="#fff" opacity="0.95"/><circle cx="17.2" cy="6.8" r="0.9" fill="#fff" opacity="0.95"/></svg>
-            </a>
+            <div class="nav-links">
+              <a class="nav-link" href="{% url 'landing' %}">Cadastro</a>
+              <a class="nav-link" href="{% url 'home' %}#lancamentos">Lançamentos</a>
+              <a class="nav-link" href="{% url 'home' %}#manifesto">Manifesto</a>
+              <a class="nav-link" href="{% url 'faq' %}">Comunidade</a>
+              <a class="nav-link" href="{% url 'donate' %}">Doações</a>
+              <a class="nav-link nav-link--cta" href="#contato">Contato</a>
+            </div>
+            <div class="nav-extras">
+              <a class="nav-yt" href="https://www.youtube.com/@selvacore" target="_blank" rel="noopener" aria-label="SelvaCore no YouTube">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M23.5 6.2s-.2-1.6-.8-2.3c-.8-.9-1.7-.9-2.1-1C16.8 2.3 12 2.3 12 2.3h-.1s-4.8 0-8.6.6C2.5 3.1 1.6 3.1.8 4 0 4.8 0 6.4 0 6.4S0 8 0 9.6v4.8C0 16 0 17.6.8 18.4c.8.9 2.1.9 2.7 1 2.9.4 12.8.5 12.8.5s4.8 0 8.6-.6c.5-.1 1.3-.1 2.1-1 .6-.7.8-2.3.8-2.3s.2-1.6.2-3.2V9.6c0-1.6-.2-3.4-.2-3.4z" fill="#FF0000"/><path d="M9.5 15.2l6-3.6-6-3.6v7.2z" fill="#fff"/></svg>
+              </a>
+              <a class="nav-ig" href="https://www.instagram.com/selvacoredevstudio" target="_blank" rel="noopener" aria-label="SelvaCore no Instagram">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><linearGradient id="igGrad" x1="0" x2="1" y1="0" y2="1"><stop offset="0%" stop-color="#f58529"/><stop offset="50%" stop-color="#dd2a7b"/><stop offset="100%" stop-color="#8134af"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="5" fill="url(#igGrad)"/><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6z" fill="#fff" opacity="0.95"/><circle cx="17.2" cy="6.8" r="0.9" fill="#fff" opacity="0.95"/></svg>
+              </a>
+              <div class="nav-auth">
+                {% if request.user.is_authenticated %}
+                  <span class="nav-user">Olá, {{ request.user.first_name|default:request.user.username }}</span>
+                  <a class="nav-link nav-link--ghost" href="{% url 'logout' %}">Sair</a>
+                {% else %}
+                  <a class="nav-link nav-link--ghost" href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Entrar</a>
+                  <a class="nav-link nav-link--solid" href="{% url 'signup' %}?next={{ request.get_full_path|urlencode }}">Criar conta</a>
+                {% endif %}
+              </div>
+            </div>
           </div>
         </nav>
       {% endblock %}
     </header>
     
     <main id="conteudo-principal" class="page-main">
+      {% if messages %}
+        <div class="flash-messages" role="status" aria-live="polite">
+          {% for message in messages %}
+            <div class="flash flash--{{ message.tags|default:'info' }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
       {% block content %}{% endblock %}
     </main>
     <footer class="site-footer" id="contato">
@@ -69,6 +177,20 @@
     {% block scripts %}{% endblock %}
     <script>
     (function(){
+      const MIN_LOADER_TIME = 5000;
+      let loaderStart = performance.now();
+
+      function hideLoader(){
+        const loader = document.getElementById('jungle-loader');
+        if(!loader) return;
+        loader.classList.add('is-leaving');
+        const removeLoader = function(){
+          if(loader && loader.parentNode){ loader.remove(); }
+        };
+        loader.addEventListener('animationend', removeLoader, { once: true });
+        setTimeout(removeLoader, 2000);
+      }
+
       function initCarouselGeneric(root, options){
         const track = root.querySelector(options.trackSelector);
         const slides = Array.from(root.querySelectorAll(options.slideSelector));
@@ -100,12 +222,32 @@
       }
 
       document.addEventListener('DOMContentLoaded', function(){
+        loaderStart = performance.now();
+        document.body.classList.add('page-is-loading');
         document.querySelectorAll('.carousel').forEach(function(el){
           initCarouselGeneric(el, { trackSelector: '.carousel-track', slideSelector: '.carousel-slide', prevSelector: '.carousel-prev', nextSelector: '.carousel-next' });
         });
         document.querySelectorAll('.simple-carousel').forEach(function(el){
           initCarouselGeneric(el, { trackSelector: '.simple-carousel-track', slideSelector: '.simple-carousel-slide', prevSelector: null, nextSelector: null });
         });
+      });
+
+      window.addEventListener('load', function(){
+        const elapsed = performance.now() - loaderStart;
+        const delay = Math.max(0, MIN_LOADER_TIME - elapsed);
+        setTimeout(function(){
+          document.body.classList.add('page-loaded');
+          document.body.classList.remove('page-is-loading');
+          hideLoader();
+        }, delay);
+      });
+
+      window.addEventListener('pageshow', function(evt){
+        if(evt.persisted){
+          const loader = document.getElementById('jungle-loader');
+          if(loader){ loader.remove(); }
+          document.body.classList.remove('page-is-loading');
+        }
       });
     })();
     </script>

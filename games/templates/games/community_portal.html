@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Comunidade SelvaCore{% endblock %}
+
+{% block content %}
+<section class="community-hero">
+  <div class="community-hero__text">
+    <h1>Portal da Comunidade</h1>
+    <p>Centralizamos perguntas frequentes, orientações e um espaço seguro para registrar sugestões que fortalecem o desenvolvimento dos nossos jogos.</p>
+  </div>
+  <div class="community-metrics">
+    <article class="metric-card">
+      <h2 class="metric-card__value">{{ feedback_metrics.total|default:0 }}</h2>
+      <p class="metric-card__label">Feedbacks recebidos</p>
+      <ul class="metric-card__details">
+        <li>Em análise: {{ feedback_metrics.reviewing|default:0 }}</li>
+        <li>Na fila: {{ feedback_metrics.pending|default:0 }}</li>
+        <li>Compartilhados: {{ feedback_metrics.published|default:0 }}</li>
+      </ul>
+    </article>
+    <article class="metric-card">
+      <h2 class="metric-card__value">R$ {{ donation_metrics.total|default:0|floatformat:2 }}</h2>
+      <p class="metric-card__label">Comprometidos pela comunidade</p>
+      <ul class="metric-card__details">
+        <li>Apoiadores registrados: {{ donation_metrics.supporters|default:0 }}</li>
+        <li>Apoios recorrentes: {{ donation_metrics.recurring|default:0 }}</li>
+        <li>Impacto médio: {{ feedback_metrics.avg_impact|default:0|floatformat:1 }}/5</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section id="faq" class="faq-section" data-focus="{{ active_focus }}">
+  <header class="faq-section__header">
+    <h2>Perguntas frequentes estruturadas por tema</h2>
+    <p>Busque por tópicos para entender nossa abordagem de desenvolvimento, fluxo de feedback e como a comunidade pode participar.</p>
+  </header>
+  <div class="faq-grid">
+    {% for category in categories %}
+      <article class="faq-category" data-category="{{ category.slug }}">
+        <header class="faq-category__header">
+          <h3>{{ category.title }}</h3>
+          {% if category.description %}<p>{{ category.description }}</p>{% endif %}
+        </header>
+        <div class="faq-accordion">
+          {% for item in category.faqs.all %}
+            <details class="faq-item" {% if item.is_featured %}open{% endif %}>
+              <summary>
+                <span class="faq-item__question">{{ item.question }}</span>
+                <span class="faq-item__audience">{{ item.get_audience_display }}</span>
+              </summary>
+              <div class="faq-item__answer">{{ item.answer|linebreaks }}</div>
+            </details>
+          {% empty %}
+            <p class="faq-empty">Estamos preparando respostas para este grupo de perguntas.</p>
+          {% endfor %}
+        </div>
+      </article>
+    {% empty %}
+      <p class="faq-empty">Nenhuma FAQ cadastrada ainda. Cadastre pelo admin e ela aparece automaticamente aqui.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section id="feedback" class="community-panels">
+  <div class="form-card{% if active_focus == 'feedback' %} is-highlight{% endif %}" data-card="feedback">
+    <h2>Envie uma orientação construtiva</h2>
+    <p>Todo feedback passa por triagem interna: estruturado, claro e com contexto ele chega mais rápido à equipe certa.</p>
+    {% if request.user.is_authenticated %}
+      <form method="post" action="{% url 'faq' %}#feedback" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="feedback" />
+        {% for field in feedback_form %}
+          <div class="form-field{% if field.errors %} has-error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
+            {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        <div class="form-actions">
+          <button class="btn btn--primary" type="submit">Enviar feedback</button>
+          <span class="form-footnote">Você poderá acompanhar o status na área autenticada.</span>
+        </div>
+      </form>
+    {% else %}
+      <div class="form-cta">
+        <p>Para manter o espaço seguro, pedimos que entre com sua conta antes de registrar sugestões.</p>
+        <div class="form-cta__actions">
+          <a class="btn btn--ghost" href="{% url 'login' %}?next={% url 'faq' %}%23feedback">Entrar</a>
+          <a class="btn btn--primary" href="{% url 'signup' %}?next={% url 'faq' %}%23feedback">Criar conta gratuita</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  <div class="form-card form-card--list">
+    <h3>Contribuições públicas recentes</h3>
+    {% if public_feedback %}
+      <ul class="feedback-list">
+        {% for entry in public_feedback %}
+          <li class="feedback-list__item">
+            <header>
+              <h4>{{ entry.title }}</h4>
+              <span class="badge">{{ entry.get_topic_display }}</span>
+              <span class="feedback-meta">Impacto {{ entry.impact_rating }}/5 · {{ entry.created_at|date:"d/m" }}</span>
+            </header>
+            <p>{{ entry.short_message }}</p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="feedback-list__empty">Assim que uma sugestão tiver autorização para divulgação, aparecerá aqui.</p>
+    {% endif %}
+  </div>
+</section>
+
+<section id="donation" class="community-panels">
+  <div class="form-card{% if active_focus == 'donation' %} is-highlight{% endif %}" data-card="donation">
+    <h2>Impulse a selva com uma doação</h2>
+    <p>Seu apoio cobre custos de servidores, arte e pesquisa de campo. Informe o valor desejado e retornamos com as opções de pagamento.</p>
+    {% if request.user.is_authenticated %}
+      <form method="post" action="{% url 'donate' %}#donation" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="donation" />
+        {% for field in donation_form %}
+          <div class="form-field{% if field.errors %} has-error{% endif %}">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
+            {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+        <div class="form-actions">
+          <button class="btn btn--primary" type="submit">Registrar intenção de apoio</button>
+          <span class="form-footnote">Atualizaremos você por e-mail com os próximos passos.</span>
+          <a class="btn btn--ghost" href="{% url 'logout' %}?next={% url 'landing' %}">Sair</a>
+        </div>
+      </form>
+    {% else %}
+      <div class="form-cta">
+        <p>Quer apoiar com qualquer valor? Entre com sua conta para registrar a intenção e liberar os próximos passos.</p>
+        <div class="form-cta__actions">
+          <a class="btn btn--ghost" href="{% url 'login' %}?next={% url 'donate' %}%23donation">Entrar</a>
+          <a class="btn btn--primary" href="{% url 'signup' %}?next={% url 'donate' %}%23donation">Criar conta gratuita</a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  <div class="form-card form-card--list donation-status-card">
+    <h3>Status das suas doações</h3>
+    {% if request.user.is_authenticated %}
+      {% if user_donations %}
+        <ul class="donation-status-list">
+          {% for item in user_donations %}
+            <li class="donation-status">
+              <header class="donation-status__header">
+                <div>
+                  <strong>R$ {{ item.pledge.amount|floatformat:2 }}</strong>
+                  <span class="donation-status__label">{{ item.pledge.get_pix_status_display }}</span>
+                </div>
+                <small class="donation-status__meta">TXID: {{ item.txid_display }}</small>
+              </header>
+              {% if item.qr_image %}
+                <div class="donation-status__qr">
+                  <img src="data:image/png;base64,{{ item.qr_image }}" width="160" height="160" alt="QR Code Pix" />
+                  <div class="donation-status__payload">
+                    <label>Payload Pix</label>
+                    <textarea readonly>{{ item.payload }}</textarea>
+                  </div>
+                </div>
+              {% endif %}
+              {% if item.pledge.pix_status != donation_status.CONFIRMED %}
+                <form method="post" action="{% url 'donate' %}#donation" class="donation-status__form" novalidate>
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="verify_pix" />
+                  <input type="hidden" name="pledge_id" value="{{ item.pledge.id }}" />
+                  <div class="form-field{% if request.POST.action == 'verify_pix' and request.POST.pledge_id|default:'' == item.pledge.id|stringformat:'s' and verification_form.errors %} has-error{% endif %}">
+                    <label for="transaction_code_{{ item.pledge.id }}">Código da transação Pix</label>
+                    <input id="transaction_code_{{ item.pledge.id }}" name="transaction_code" type="text" placeholder="Cole o TXID do comprovante" />
+                    <p class="form-help">Após pagar, copie o TXID do comprovante e insira aqui para validar.</p>
+                    {% if request.POST.action == 'verify_pix' and request.POST.pledge_id|default:'' == item.pledge.id|stringformat:'s' %}
+                      {% for error in verification_form.errors.values %}
+                        {% for msg in error %}<p class="form-error">{{ msg }}</p>{% endfor %}
+                      {% endfor %}
+                    {% endif %}
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn btn--primary" type="submit">Verificar pagamento</button>
+                    <span class="form-footnote">Última checagem: {% if item.pledge.pix_last_checked_at %}{{ item.pledge.pix_last_checked_at|date:"d/m H:i" }}{% else %}—{% endif %}</span>
+                  </div>
+                </form>
+              {% else %}
+                <p class="donation-status__confirmed">Pix confirmado em {{ item.pledge.pix_confirmed_at|date:"d/m H:i" }}. Obrigado!</p>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="donation-note">Registre uma intenção para gerar um QR Code Pix personalizado e acompanhar aqui.</p>
+      {% endif %}
+    {% else %}
+      <p class="donation-note">Entre com sua conta para visualizar QR Codes e verificar pagamentos Pix.</p>
+    {% endif %}
+    <div class="donation-usage">
+      <h4>Como usamos cada real</h4>
+      <ul class="donation-breakdown">
+        <li><strong>40%</strong> prototipagem e testes com jogadores</li>
+        <li><strong>30%</strong> arte, áudio e trilhas originais</li>
+        <li><strong>20%</strong> infraestrutura, servidores e ferramentas</li>
+        <li><strong>10%</strong> iniciativas socioambientais parceiras</li>
+      </ul>
+      <p class="donation-note">Os percentuais são revistos trimestralmente e comunicados à comunidade.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

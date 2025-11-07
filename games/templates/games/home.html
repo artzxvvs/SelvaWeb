@@ -22,7 +22,10 @@
           cinematográficas criadas para plataformas cruzadas.
         {% endif %}
       </p>
-      <a class="hero-cta" href="#lancamentos">Explorar catálogo</a>
+      <div class="hero-actions">
+        <a class="hero-cta" href="#lancamentos">Explorar catálogo</a>
+        <a class="hero-cta hero-cta--ghost" href="{% url 'landing' %}">Criar conta e participar</a>
+      </div>
     </div>
     <div class="hero-feature">
       <span class="hero-feature__label">Visão</span>
@@ -43,7 +46,7 @@
         {% elif unrevealed_games %}
           Incubadora ativa com {{ unrevealed_games|length }} projetos confidenciais aguardando anúncio.
         {% else %}
-          Cadastre um jogo no admin para iniciar o calendário de lançamentos.
+          Continuar desenvolvendo CapUp, trabalhando conscientização e diversão!.
         {% endif %}
       </p>
     </div>
@@ -124,6 +127,65 @@
           <p class="pillar__text">{{ principle.description }}</p>
         </article>
       {% endfor %}
+    </div>
+  </section>
+
+  <section class="community-preview" aria-labelledby="community-preview-title">
+    <div class="community-preview__header">
+      <h2 id="community-preview-title">A Selva também é comunidade</h2>
+      <p>FAQ estruturado e feedbacks transparentes ajudam a guiar nosso desenvolvimento compartilhado.</p>
+      <a class="hero-cta" href="{% url 'faq' %}">Abrir portal da comunidade</a>
+    </div>
+    <div class="community-preview__grid">
+      <div class="community-preview__column">
+        <h3>Perguntas em destaque</h3>
+        {% if faq_highlights %}
+          <ul class="community-faq-list">
+            {% for entry in faq_highlights %}
+              <li>
+                <span class="community-faq-category">{{ entry.category.title }}</span>
+                <strong>{{ entry.question }}</strong>
+                <p>{{ entry.answer|truncatewords:22 }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="community-preview__empty">Cadastre FAQs no painel para apresentá-las aqui.</p>
+        {% endif %}
+      </div>
+      <div class="community-preview__column">
+        <h3>Feedbacks da floresta</h3>
+        {% if community_updates %}
+          <ul class="community-feedback-list">
+            {% for item in community_updates %}
+              <li>
+                <header>
+                  <span class="badge">{{ item.get_topic_display }}</span>
+                  <small>{{ item.created_at|date:"d/m" }}</small>
+                </header>
+                <p>{{ item.short_message }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="community-preview__empty">Assim que feedbacks forem compartilhados, eles aparecerão aqui.</p>
+        {% endif %}
+      </div>
+      <div class="community-preview__column community-preview__column--mini">
+        <h3>Áreas da selva</h3>
+        {% if context_related_categories %}
+          <ul class="community-category-list">
+            {% for category in context_related_categories %}
+              <li>
+                <strong>{{ category.title }}</strong>
+                <p>{{ category.description|default:"Adicione uma descrição para ajudar a comunidade."|truncatewords:20 }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="community-preview__empty">Crie categorias de FAQ para mapear temas estratégicos.</p>
+        {% endif %}
+      </div>
     </div>
   </section>
 

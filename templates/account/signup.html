@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Criar conta • SelvaCore{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-card">
+    <h1>Criar conta na Selva</h1>
+    <p class="auth-lead">O cadastro é gratuito e libera o envio de feedback estruturado e o registro de intenções de apoio.</p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error-group">
+          {% for error in form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+      {% endif %}
+      {% for field in form %}
+        <div class="form-field{% if field.errors %} has-error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
+          {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+      {% endfor %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% elif request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}" />{% endif %}
+      {% if force_signup %}<input type="hidden" name="force_signup" value="1" />{% endif %}
+      <div class="form-actions">
+        <button class="btn btn--primary" type="submit">Cadastrar</button>
+        <a class="btn btn--ghost" href="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Já tenho conta</a>
+      </div>
+    </form>
+    <p class="auth-switch">Ao criar a conta você concorda em receber atualizações ocasionais da equipe SelvaCore.</p>
+    <div class="auth-benefits">
+      <h2>Por que criar uma conta?</h2>
+      <ul>
+        <li>Acompanhe o roadmap e receba feedbacks priorizados.</li>
+        <li>Envie sugestões estruturadas e vote nas ideias da comunidade.</li>
+        <li>Gere QR Codes Pix personalizados para apoiar o desenvolvimento.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}

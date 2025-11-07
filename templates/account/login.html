@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Entrar • SelvaCore{% endblock %}
+
+{% block content %}
+<section class="auth-shell">
+  <div class="auth-card">
+    <h1>Entrar na Selva</h1>
+    <p class="auth-lead">Use seu e-mail e senha para acessar o portal de FAQ, registrar feedbacks e acompanhar doações.</p>
+    {% if request.GET.retorno == 'signup' %}
+      <div class="auth-note">
+        <p>Detectamos um cadastro recente neste dispositivo. Caso queira criar uma nova conta, <a href="{% url 'landing' %}?novo=1">abra o formulário de cadastro direto</a>.</p>
+      </div>
+    {% endif %}
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error-group">
+          {% for error in form.non_field_errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+      {% endif %}
+      {% for field in form %}
+        <div class="form-field{% if field.errors %} has-error{% endif %}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.help_text %}<p class="form-help">{{ field.help_text }}</p>{% endif %}
+          {% for error in field.errors %}<p class="form-error">{{ error }}</p>{% endfor %}
+        </div>
+      {% endfor %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% elif request.GET.next %}<input type="hidden" name="next" value="{{ request.GET.next }}" />{% endif %}
+      <div class="form-actions">
+        <button class="btn btn--primary" type="submit">Entrar</button>
+        <a class="btn btn--ghost" href="{% url 'landing' %}">Voltar</a>
+      </div>
+    </form>
+    <p class="auth-switch">Não possui conta? <a href="{% url 'signup' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Crie uma agora</a>.</p>
+    <p class="auth-switch">Não recebeu o código ou perdeu? <a href="{% url 'verify_email' %}">Reenviar verificação</a>.</p>
+  </div>
+</section>
+{% endblock %}
